@@ -1,5 +1,5 @@
 (ns thinkfp.utils
-  (:require [utilities.utils :as global :refer :all])
-  (:gen-class))
+  (:require [utilities.utils :as global :refer :all]))
 
-(def justavar "hai")
+(defn foreach [f coll]
+  (dorun (map f coll)))

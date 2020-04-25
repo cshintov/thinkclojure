@@ -1,38 +1,39 @@
 (ns thinkfp.ch3
-  (:require [thinkfp.utils :as utils]
+  (:require [thinkfp.utils :as ut]
             [clojure.string :as string]
-            [clojure.pprint :as pp])
-  (:gen-class))
+            [clojure.pprint :as pp]))
+
+(def ^:dynamic ceil-joint "+")
+(def ^:dynamic wall-joint "|")
 
 (defn make-component [joint mater len]
   "Makes a component of length len
-  (make-component - + 3)
+  (make-component + - 3)
   => (+ - - -)"
   (concat [joint] (repeat len mater)))
 
 (defn make-layer [mater joint len]
   "Makes a layer of length len
-  (make-layer floor row 3)
+  (make-layer row floor 3)
   => (row row row floor)"
   (concat (repeat len mater) [joint]))
 
-(def tile
-  "+ - - -"
-  (partial make-component "+" "-"))
+(defn make-tile [joint mater]
+  "ex: + - - -"
+  (partial make-component joint mater))
+
+(def ^:dynamic tile (make-tile "+" "-"))
+(def ^:dynamic brick (make-tile "|" " "))
 
 (defn make-ceil [col len]
   "Ceiling is a series of tiles ending with +.
     + - - - + - - - +"
-  (make-layer (tile len) "+" col))
-
-(def brick
-  "| s s s"
-  (partial make-component "|" " "))
+  (make-layer (tile len) ceil-joint col))
 
 (defn make-wall [col len]
   "Wall is a series of bricks ending with |
     | s s s | s s s |"
-  (make-layer (brick len) "|" col))
+  (make-layer (brick len) wall-joint col))
 
 (defn make-row [row col len]
   "A row one layer of ceil and 'len' layers of walls"
@@ -58,15 +59,11 @@
       println))
 
 (defn draw-row [row]
-  (doseq [elem row]
-    (-> elem
-        flatten
-        join
-        println)))
+  (ut/foreach draw row))
 
 (defn draw-grid [row col len]
   (let [grid (make-grid row col len)]
     (do 
-      (dotimes [i (- (count grid) 1)]
-        (draw-row (nth grid i))))
-      (draw (last grid))))
+      (ut/foreach draw-row (butlast grid))
+      (draw (last grid)))))
+
