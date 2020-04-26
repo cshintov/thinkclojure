@@ -2,6 +2,7 @@
   (:require [thinkfp.utils :as ut]
             [clojure.pprint :as pp]))
 
+;;------------------------------------------------------------------------
 ;; Base layer where components of the grid is constructed
 ;; Like ceiling, wall_layer, row, etc.
 
@@ -33,7 +34,9 @@
   "A row is one ceiling and 'len' of wall-layers"
     (make-component ceil-tile wall-tile layers))
 
+;;------------------------------------------------------------------------
 ;; Drawing functions
+
 (defn draw [elem]
   (-> elem
       flatten
@@ -43,25 +46,33 @@
 (defn draw-row [row] 
   (ut/foreach draw row))
 
-;; Grid construction
-(defn make-grid [ceil wall len row col]
-  "A grid is represented as a map of the following elements
-  (ceil, wall, row, col, len)"
-  {:ceil (ceil col) :wall (wall col) :row row :col col :len len})
+;;------------------------------------------------------------------------
+;; Grid representation
 
+;; Initial version of this program used an actual grid with each component 
+;; (ceiling and walls) in a 2d list. The refactored version, uses a map 
+;; to represent the grid. For example, A grid can be represented by
+;; {:ceil ("+" "-" "-") :wall ("|" "r" "r") :row 5, :col 5, :len 2} 
+
+(defn make-grid [ceil wall len row col]
+  {:ceil ceil :wall wall :len len :row row :col col})
+
+;; Accepts the grid representation as a map and fleshes it out.
 (defn draw-grid [grid]
-  (let [{ceil :ceil wall :wall row :row len :len} grid
-        floor ceil
-        a_row (make-component ceil wall len)
+  (let [{ceil :ceil wall :wall row :row col :col len :len} grid
+        ceiling (make ceil col) 
+        layer (make wall col)
+        a_row (make-component ceiling layer len)
         rows (repeat row a_row)]
     (ut/foreach draw-row rows)
-    (draw floor)))
+    (draw ceiling)))
 
+;; Prepares for grid creation with given building materials.
+;; The output is a particular version of the 'make-grid' function ,  
+;; pre-cooked with the given materials.
 (defn make-grid-with-materials 
   [ceil-joint ceil-mater wall-joint wall-mater len]
   (let 
-    [ceil-tile ((make-tile ceil-joint ceil-mater) len)
-     wall-tile ((make-tile wall-joint wall-mater) len)
-     ceil (partial make ceil-tile)
-     wall (partial make wall-tile)]
+    [ceil ((make-tile ceil-joint ceil-mater) len)
+     wall ((make-tile wall-joint wall-mater) len)]
     (partial make-grid ceil wall len)))
