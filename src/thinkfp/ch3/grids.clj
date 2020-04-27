@@ -1,59 +1,30 @@
 (ns thinkfp.ch3.grids
-  "This module talks about combining grids" 
-  (:require [thinkfp.ch3.grid :refer :all]
-            [thinkfp.utils :as ut]
+  (:require [thinkfp.utils :as ut]
+            [thinkfp.ch3.cell :as cl]
+            [thinkfp.ch3.draw :as dw]
+            [thinkfp.ch3.grid :as gd]
             [clojure.pprint :as pp]))
 
-;; -----------------------------------------------------------------------------
-;; Scale a grid horizontally vertically and both
+(def mkcl (cl/make-cell-with-materials "+" "-" "|" "r"))
+(def cell (mkcl 2 2))
+(def mkgd (gd/make-grid-with-cell cell))
+(dw/draw-grid  (mkgd 5 5))
 
-(defn scaleh [grid n]
-  (update grid :col #(* % n)))
+(def mkcl (cl/make-cell-with-materials "+" "-" "|" "r"))
+(def nc (mkcl 1 1))
 
-(defn scalev [grid n]
-  (update grid :row #(* % n)))
+(def mkcla (cl/make-cell-with-materials "+" "-" "|" "x"))
+(def mc (mkcla 1 1))
 
-(defn scale [grid n]
-  (let [grdh (scaleh grid n)]
-    (scalev grdh n)))
+(def mkcl (cl/make-cell-with-materials "+" "-" "|" "r"))
+(dw/draw-grid (gd/make-grid (mkcl 2 2) 5 5))
 
-;; -----------------------------------------------------------------------------
-;; Add two similar sized grids together horizontally and vertically.
+(dw/draw-row [nc mc] :top true)
+(dw/draw-grid [[nc mc nc]
+            [nc mc nc]
+            [nc mc nc]])
 
-(defn joinv [g1 g2]
-  {:ceil (:ceil g1) :wall (:wall g1) :len (:len g1)
-   :col (:col g1)
-   :row (+ (:row g1) (:row g2))})
-
-(defn joinh [g1 g2]
-  {:ceil (:ceil g1) :wall (:wall g1) :len (:len g1)
-   :row (:row g1)
-   :col (+ (:col g1) (:col g2))})
-
-;; -----------------------------------------------------------------------------
-;; Grids is a collection of grids
-;; Or should I refactor the grids's representations to the following
-;; (ceil, wall, row, col, len)
-
-(let 
-    [mk-grid (make-grid-with-materials "+" "-" "|" "r" 1)] 
-    (def _1by1 (mk-grid 1 1))
-    (def _1by2 (mk-grid 1 2))
-    (def _1by3 (mk-grid 1 3))
-    (def _2by1 (mk-grid 2 1)))
-
-;; -----------------------------------------------------------------------------
-;; While joining will have to drop the joint cell at the end of the first component
-(defn join-comp [a b]
-  (concat (butlast a) b))
+(cl/make-row [nc mc nc])
 
 ;; TODO
-;; 1. Handle uneven grids
-
-;; Combine grids
-;; A combo grid: A 2d array of grids
-;; Vertical combination of rows
-;; Where a row is a horizontal addition of grids.
-
-;; Or what if All of this refactored as in
-;; A grid is grid of cells.
+;; Make a grid with random characters.
