@@ -1,6 +1,5 @@
 (ns thinkfp.ch3.cell
-  (:require [thinkfp.utils :as ut]
-            [clojure.pprint :as pp]))
+  (:require [thinkfp.utils :as ut]))
 
 ;; ------------------------------------------------------------------------
 ;; Let's talk about cells.
@@ -37,10 +36,9 @@
 ;; (def mk-cell (make-cell-with-materials "+" "-" "|" "r"))
 ;; (def cell (mk-cell 1 1))
 
-(defn make-cell-with-materials 
+(defn make-cell-with-materials [ceil-joint ceil-mater wall-joint wall-mater]
   "Returns a function when called as (f h w) creates a cell with 
   the given materials and dimensions (h w)"
-  [ceil-joint ceil-mater wall-joint wall-mater]
   (fn [h w]
     (let [ceil (make-comp ceil-mater ceil-joint w)
           wall (make-comp wall-mater wall-joint w)]
@@ -49,7 +47,7 @@
 ;; ----------------------------------------------------------------------------
 ;; If we are to build bigger constructs than a tiny cell, 
 ;; we need to combine them. In order to combine cells, we need to combine their
-;; individual components, aka, ceilings and walls.
+;; individual components, the ceilings and walls.
 
 ;; Let's combine components.
 ;; (+ - +) combine (* r *) ==> (+ - + r *)
