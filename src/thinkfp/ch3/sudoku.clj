@@ -13,8 +13,9 @@
 ;; Let's actually solve the puzzle.
 ;; But first things, first. Parsing the initial configuration into a grid.
 
-
 ;; Given a configuration parse it into the grid.
+;; ex:
+;; 4.....8.5.3..........7......2.....6.....8.4......1.......6.3.7.5..2.....1.4......
 
 (defn make-cell-with [ceil-joint ceil-mater wall-joint] 
   (fn [value] 
@@ -26,18 +27,15 @@
 
 (def digits "123456789 ")
 
-(dw/draw-cell (make-cell "2") :top true)
-
 (ut/foreach 
   #(dw/draw-cell (make-cell %) :top true)
   digits)
-
 
 (def config1 (first (ut/lazyfile "resources/hard.txt")))
 
 (defn parse [config]
   "Returns the grid from the config"
-  (let [config (st/replace config #"\." " ")
+  (let [config (st/replace config #"\.|0" " ")
         flat-index (partial ut/flat-index 9)] 
     (assert (= 81 (count config)))
     (for [i (range 9)] 
@@ -45,3 +43,16 @@
         (make-cell (nth config (flat-index i j)))))))
 
 (dw/draw-grid (parse config1))
+
+;; What's the idea here?
+;; Backtracking and search.
+;; How? 
+;; First find out all the possible values for each empty cell.
+;; Find cells with only one possibility and assign that value. (value)
+;; Find the value which is possible in only cell and assign that value. (cell)
+;; Each assignment has to update the possible values in each cell by eliminating
+;; the assigned value.
+;; Now the search:
+;; Take the cell with minimum possibilities try one by one. Choose the others if 
+
+;; the current selection leads to a contradiction.
