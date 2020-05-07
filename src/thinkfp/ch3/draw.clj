@@ -21,11 +21,9 @@
 (defn draw-cell 
   "Draw a cell.  
   Drawing the ceiling is controlled by :top keyword argument"
-  [{:keys [ceil wall h top]} &
-    {:keys [top] :or {top false}}]
+  [[ceil & rst] & {top :top :or {top false}}]
   (if top (draw-comp ceil))
-  (ut/foreach draw-comp (repeat h wall))
-  (draw-comp ceil))
+  (ut/foreach draw-comp rst))
 
 ;; To draw a row of cells first combine the cells to form a row
 ;; and then draw it (which is internally like a big cell).

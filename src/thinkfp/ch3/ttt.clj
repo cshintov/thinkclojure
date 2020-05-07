@@ -8,8 +8,8 @@
 ;; ----------------------------------------------------------------------------
 ;; Setting up initial board.
 
-(def mk-empty (cl/make-cell-with-materials "+" "-" "|" " "))
-(def E (mk-empty 1 1))
+(def mk-empty (cl/make-cell-with-materials "+" "|" "-"))
+(def E (mk-empty [" "]))
 
 (defn create-empty-board [r c]
   ((gd/make-grid-with-cell E) r c))
@@ -110,10 +110,10 @@
 ;; ----------------------------------------------------------------------------
 (defn play-a-game []
   ; Setup players and board
-  (def make-x (cl/make-cell-with-materials "+" "-" "|" "X"))
-  (def make-o (cl/make-cell-with-materials "+" "-" "|" "0"))
-  (def X (make-x 1 1))
-  (def O (make-o 1 1))
+  (def make-x (cl/make-cell-with-materials "+" "|" "-"))
+  (def make-o (cl/make-cell-with-materials "+" "|" "-"))
+  (def X (make-x ["X"]))
+  (def O (make-o ["0"]))
 
   (def board (create-empty-board 3 3))
 
@@ -124,4 +124,4 @@
       (do (println "And the winner is...")
           (dw/draw-cell result :top true)))))
 
-;(play-a-game)
+(play-a-game)

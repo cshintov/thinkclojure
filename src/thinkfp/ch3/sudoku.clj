@@ -17,19 +17,17 @@
 ;; ex:
 ;; 4.....8.5.3..........7......2.....6.....8.4......1.......6.3.7.5..2.....1.4......
 
-(defn make-cell-with [ceil-joint ceil-mater wall-joint] 
-  (fn [value] 
-    (let 
-      [make #(cl/make-cell-with-materials ceil-joint ceil-mater wall-joint %)]
-      ((make value) 1 1))))
-
-(def make-cell (make-cell-with "+" "-" "|"))
 
 (def digits "123456789 ")
 
+(defn make-cell [value]
+  ((cl/make-cell-with-materials "+" "|" "-") [value]))
+
+(dw/draw-cell (make-cell [" "]))
+
 (ut/foreach 
   #(dw/draw-cell (make-cell %) :top true)
-  digits)
+  (map vector digits))
 
 (def config1 (first (ut/lazyfile "resources/hard.txt")))
 
