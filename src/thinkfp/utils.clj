@@ -46,6 +46,9 @@
   (with-open [rdr (BufferedReader. (FileReader. file-name))]
     (reduce line-func line-acc (line-seq rdr))))
 
+(defn join-lists [lists]
+  (reduce concat lists))
+
 (defn foreach-line [file-name func]
   (with-open [rdr (BufferedReader. (FileReader. file-name))]
     (doseq [line (line-seq rdr)] (println line))))
